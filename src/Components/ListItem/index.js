@@ -2,21 +2,36 @@ import React from 'react'
 import { Table } from 'semantic-ui-react'
 import { Button, Header, Icon, Modal, Input } from 'semantic-ui-react'
 import axios from 'axios'
-import { URL } from '../../Const'
+import { MAIN_URL } from '../../Const'
 
 const PageListItem = () => {
-    const [task, setTask] = React.useState("")
+    const [text, setText] = React.useState("")
     const formData = new FormData()
 
 
     const onChange = (e) => {
-        setTask(e.target.value)
-        formData.set("task", e.target.value)
+        setText(e.target.value)
+        formData.set("text", e.target.value)
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
-        
+        let data = {
+            text: text
+        }
+        console.log(MAIN_URL)
+        try {
+            let response = await axios({
+                method: 'post',
+                url: MAIN_URL,
+                data: data,
+                config: { headers: { 'Content-Type': 'application/json' } }
+            })
+
+            console.log(response)
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -28,7 +43,7 @@ const PageListItem = () => {
                     <Modal trigger={<Button primary>CREATE</Button>} basic size='small'>
                         <Header icon='archive' content='Archive Old Messages' />
                         <Modal.Content>
-                            <Input focus placeholder='Your task' value={task} name="task" onChange={onChange} />
+                            <Input focus placeholder='Your text' value={text} name="text" onChange={onChange} />
                         </Modal.Content>
                         <Modal.Actions>
                             <Button basic color='red' inverted>
